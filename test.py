@@ -1,7 +1,7 @@
 from main import *
 
+
 # Note: You will likely need to change the token to the most recent. You can grab it from Zapier.
-token = 'S2i9vmTc9ZRk7nBD5mdgV6gK_0baSvDVEBzK7ARbZ2yuiNleckpFyWGvp9FcpWNs0t0UEbeNbYbyDLzZsDT89UtOgvbNyJj4nxBgaeI3DZ5NzQ00vDFJJVqiC4Otqbgp4Q6HoKHOk0gWhsPC1tzwSjSt64tWrBVkDxo0vzzGhVTvMlUcWwDbDu--JDX3wGLIbchYkfbwUlyxnZtZIW-bqq1EvtN_2pTxs0Va2RS82vs0eM4c_lrMGj2e8uv2EEmhHqx2dZ9iDkh7TY6A_SgM4h9NShVNAgYf5CrZQbfcBCn8J3Ev'
 
 
 class TestLineItem:
@@ -190,7 +190,7 @@ class TestLineItem:
 
 def test_get_item_description_1():
     sku = 'BK0310'
-    item_description = get_item_description(sku, token)
+    item_description = get_item_description(sku, access_token)
     expected = 'BumperShellz:BK0310'
     actual = item_description['data'][0]['fullname']
     assert (actual == expected)
@@ -206,7 +206,7 @@ def test_convert_line_item_to_json():
     line_individual_item_discount = 0
     line_item_ordered = "SKU: BK0310, Qty: 1, Price: 100.00,"
     line_subtotal = 20
-    item_description = get_item_description(line_order_sku, token)
+    item_description = get_item_description(line_order_sku, access_token)
     line_item = LineItem(item_description, line_quantity, line_is_drop_shipper, line_individual_item_discount,
                          line_item_ordered, line_state_code, line_subtotal, line_order_sku, line_received_date)
     line_item_json_converted = convert_line_item_to_json(line_item)

@@ -9,6 +9,8 @@ import certifi
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 import urllib3
 
+from accessCode import access_token
+
 
 class Class:
     def __init__(self):
@@ -147,7 +149,6 @@ def convert_line_item_to_json(line_item):
 
 
 if __name__ == '__main__':
-    access_token = "S2i9vmTc9ZRk7nBD5mdgV6gK_0baSvDVEBzK7ARbZ2yuiNleckpFyWGvp9FcpWNs0t0UEbeNbYbyDLzZsDT89UtOgvbNyJj4nxBgaeI3DZ5NzQ00vDFJJVqiC4Otqbgp4Q6HoKHOk0gWhsPC1tzwSjSt64tWrBVkDxo0vzzGhVTvMlUcWwDbDu--JDX3wGLIbchYkfbwUlyxnZtZIW-bqq1EvtN_2pTxs0Va2RS82vs0eM4c_lrMGj2e8uv2EEmhHqx2dZ9iDkh7TY6A_SgM4h9NShVNAgYf5CrZQbfcBCn8J3Ev"
     # noinspection DuplicatedCode
     order_sku = "BK0310"
     state_code = "CA"
