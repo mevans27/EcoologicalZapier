@@ -196,6 +196,12 @@ def test_get_item_description_1():
     assert (actual == expected)
 
 
+def test_correct_plus_sign_skus():
+    test_ordered_items_table = "SKU: BK0310, QTY: 1, Price: 123,\nSKU: BK0310+BK3010, QTY: 2,\nSKU: BK0310, QTY: 1,\nSKU: BK3010, QTY: 1,"
+    test_items = correct_plus_sign_skus(test_ordered_items_table)
+    assert (test_items == "SKU: BK0310, QTY: 1, Price: 123,\nSKU: BK0310, QTY: 2,\nSKU: BK3010, QTY: 2,\nSKU: BK0310, QTY: 1,\nSKU: BK3010, QTY: 1,")
+
+
 def test_convert_line_item_to_json():
     # noinspection DuplicatedCode
     line_order_sku = "BK0310"
@@ -203,11 +209,10 @@ def test_convert_line_item_to_json():
     line_received_date = "2021-01-01"
     line_quantity = 1
     line_is_drop_shipper = "false"
-    line_individual_item_discount = 0
     line_item_ordered = "SKU: BK0310, Qty: 1, Price: 100.00,"
     line_subtotal = 20
     item_description = get_item_description(line_order_sku, access_token)
-    line_item = LineItem(item_description, line_quantity, line_is_drop_shipper, line_individual_item_discount,
+    line_item = LineItem(item_description, line_quantity, line_is_drop_shipper,
                          line_item_ordered, line_state_code, line_subtotal, line_order_sku, line_received_date)
     line_item_json_converted = convert_line_item_to_json(line_item)
 
@@ -222,5 +227,5 @@ def test_convert_line_item_to_json():
     assert (json_test['percentdiscount'] == 0.00)
     assert (json_test['quantity'] == 1)
     assert (json_test['tax']['taxable'] is True)
-    assert (json_test['tax']['taxCode'] == "null")
+    assert (json_test['tax']['taxCode'] is None)
     assert (json_test['unitprice'] == 100.00)

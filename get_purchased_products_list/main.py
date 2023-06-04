@@ -1,15 +1,11 @@
-# This is a sample Python script.
+from accessCode import *
 
 import json
 import re
 from datetime import timedelta, datetime
 
 import certifi
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 import urllib3
-
-from accessCode import access_token
 
 
 class Class:
@@ -26,11 +22,11 @@ class Item:
 class Tax:
     def __init__(self, taxable):
         self.taxable = taxable
-        self.taxCode = "null"
+        self.taxCode = None
 
 
 class LineItem:
-    def __init__(self, item_description, item_quantity, drop_shipper, item_discount, item_ordered_line, state,
+    def __init__(self, item_description, item_quantity, drop_shipper, item_ordered_line, state,
                  item_subtotal, item_sku, item_received_date):
         self.item = json.dumps(Item(item_description['data'][0]['fullname']).__dict__)
         self.Class = json.dumps(Class().__dict__)
@@ -43,7 +39,6 @@ class LineItem:
         self.unitprice = self.get_override_price(self.percentdiscount, item_ordered_line, item_subtotal)
         self.amount = self.get_final_calculated_amount(self.unitprice, item_quantity)
         self.listPrice = item_subtotal
-        self.percentdiscount = item_discount
         self.duedate = self.get_due_date(item_received_date, self.get_business_days(self.description, item_sku))
 
     @staticmethod
@@ -56,10 +51,8 @@ class LineItem:
     @staticmethod
     def get_final_individual_item_discount(item_discount, drop_shipper):
         if drop_shipper == "true":
-            print("\"Is drop shipper\" is: ", drop_shipper)
             final_individual_item_discount = 40
         else:
-            print("\"Is drop shipper\" is: ", drop_shipper)
             final_individual_item_discount = item_discount
 
         return final_individual_item_discount
@@ -68,16 +61,13 @@ class LineItem:
     def get_override_price(final_individual_item_discount, item_ordered_line, item_subtotal):
 
         if re.search('Price:', item_ordered_line):
-            print("Item Ordered specifies price")
-            item_price = re.search(r'Price: (.*?),', item_ordered_line).group(1)
-            item_qty = re.search(r'Qty: (.*?),', item_ordered_line).group(1)
+            item_price = re.search(r'Price: (.*?),', item_ordered_line, re.IGNORECASE).group(1)
+            item_qty = re.search(r'(?<=QTY: )\d+(?=,)', item_ordered_line, re.IGNORECASE).group().strip()
             override_price = float(item_price) * float(item_qty)
         else:
-            print("Item Ordered does not specify price, using item_subtotal from SOS")
             override_price = item_subtotal
 
         if float(final_individual_item_discount) > 0:
-            print("Discount is greater than zero, discount:", final_individual_item_discount)
             override_price = round(float(override_price) * ((100 - float(final_individual_item_discount)) / 100), 2)
 
         return override_price
@@ -128,8 +118,6 @@ def get_item_description(sku, token):
     )
 
     json_object = json.loads(resp.data.decode("utf-8"))
-    print(json_object)
-
     return json_object
 
 
@@ -148,22 +136,39 @@ def convert_line_item_to_json(line_item):
     return json_string
 
 
+def correct_plus_sign_skus(items_table):
+    input_array = items_table.split('\n')
+    final_ordered_items_table_string = ""
+    for i in range(len(input_array)):
+        row = input_array[i]
+        print("Row:" + row)
+        if "+" in row:
+            qty = re.search(r'(?<=QTY: )\d+(?=,)', row, re.IGNORECASE).group().strip()
+            sku1 = re.search(r'(?<=SKU: )(.*)(?=\+)', row).group().strip()
+            sku2 = re.search(r'(?<=\+)(.*)(?=, QTY:)', row, re.IGNORECASE).group().strip()
+            final_ordered_items_table_string += f"SKU: {sku1}, QTY: {qty},\n"
+            final_ordered_items_table_string += f"SKU: {sku2}, QTY: {qty},"
+        else:
+            final_ordered_items_table_string += row
+        if i < len(input_array) - 1:
+            final_ordered_items_table_string += "\n"
+    return final_ordered_items_table_string
+
+
 if __name__ == '__main__':
-    # noinspection DuplicatedCode
-    order_sku = "BK0310"
-    state_code = "CA"
-    received_date = "2021-01-01"
-    quantity = 1
-    is_drop_shipper = "false"
-    individual_item_discount = 0
-    item_ordered = "SKU: BK0310, Qty: 1, Price: 100.00,"
-    subtotal = 20
-    order_item_description = get_item_description(order_sku, access_token)
-    order_line_item = LineItem(order_item_description, quantity, is_drop_shipper, individual_item_discount,
-                               item_ordered, state_code, subtotal, order_sku, received_date)
 
-    # convert to JSON format
+    items = correct_plus_sign_skus(table_of_items_ordered)
 
-    line_item_json = convert_line_item_to_json(order_line_item)
-    # print created JSON objects
-    print(line_item_json)
+    purchased_products_list = []
+    items_array = items.split('\n')
+    for item_ordered in items_array:
+        order_quantity = re.search(r'(?<=QTY: )\d+(?=,)', item_ordered, re.IGNORECASE).group().strip()
+        order_sku = re.search(r'(?<=SKU: )[A-Z0-9]+(?=,?\s)', item_ordered, re.IGNORECASE).group().strip()
+        order_item_description = get_item_description(order_sku, access_token)
+        order_line_item = LineItem(order_item_description, order_quantity, is_drop_shipper,
+                                   item_ordered, state_code, subtotal, order_sku, received_date)
+        line_item_json = convert_line_item_to_json(order_line_item)
+        purchased_products_list.append(line_item_json)
+
+    print("Purchased_products_list:")
+    print(purchased_products_list)
