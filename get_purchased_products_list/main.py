@@ -1,4 +1,4 @@
-from accessCode import *
+from input_data import *
 
 import json
 import re
@@ -155,20 +155,18 @@ def correct_plus_sign_skus(items_table):
     return final_ordered_items_table_string
 
 
-if __name__ == '__main__':
+items = correct_plus_sign_skus(table_of_items_ordered)
 
-    items = correct_plus_sign_skus(table_of_items_ordered)
+purchased_products_list = []
+items_array = items.split('\n')
+for item_ordered in items_array:
+    order_quantity = re.search(r'(?<=QTY: )\d+(?=,)', item_ordered, re.IGNORECASE).group().strip()
+    order_sku = re.search(r'(?<=SKU: )[A-Z0-9]+(?=,?\s)', item_ordered, re.IGNORECASE).group().strip()
+    order_item_description = get_item_description(order_sku, access_token)
+    order_line_item = LineItem(order_item_description, order_quantity, is_drop_shipper,
+                               item_ordered, state_code, subtotal, order_sku, received_date)
+    line_item_json = convert_line_item_to_json(order_line_item)
+    purchased_products_list.append(line_item_json)
 
-    purchased_products_list = []
-    items_array = items.split('\n')
-    for item_ordered in items_array:
-        order_quantity = re.search(r'(?<=QTY: )\d+(?=,)', item_ordered, re.IGNORECASE).group().strip()
-        order_sku = re.search(r'(?<=SKU: )[A-Z0-9]+(?=,?\s)', item_ordered, re.IGNORECASE).group().strip()
-        order_item_description = get_item_description(order_sku, access_token)
-        order_line_item = LineItem(order_item_description, order_quantity, is_drop_shipper,
-                                   item_ordered, state_code, subtotal, order_sku, received_date)
-        line_item_json = convert_line_item_to_json(order_line_item)
-        purchased_products_list.append(line_item_json)
-
-    print("Purchased_products_list:")
-    print(purchased_products_list)
+print("Purchased_products_list:")
+print(purchased_products_list)
