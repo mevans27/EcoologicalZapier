@@ -8,6 +8,14 @@ import certifi
 import urllib3
 
 
+access_token = input_data['access_token']
+state_code = input_data['state_code']
+received_date = input_data['received_date']
+is_drop_shipper = input_data['is_drop_shipper']
+subtotal = input_data['subtotal']
+table_of_items_ordered = input_data['table_of_items_ordered']
+
+
 class Class:
     def __init__(self):
         self.id = 1
@@ -99,6 +107,7 @@ class LineItem:
 
 
 def get_item_description(sku, token):
+    print("sku:" + sku)
     connect_timeout = 10.0
     read_timeout = 20.0
     http = urllib3.PoolManager(
@@ -161,8 +170,9 @@ purchased_products_list = []
 items_array = items.split('\n')
 for item_ordered in items_array:
     order_quantity = re.search(r'(?<=QTY: )\d+(?=,)', item_ordered, re.IGNORECASE).group().strip()
-    order_sku = re.search(r'(?<=SKU: )[A-Z0-9]+(?=,?\s)', item_ordered, re.IGNORECASE).group().strip()
+    order_sku = re.search(r'(?<=SKU: )(.*?)(?=,)', item_ordered, re.IGNORECASE).group().strip()
     order_item_description = get_item_description(order_sku, access_token)
+    print(order_item_description)
     order_line_item = LineItem(order_item_description, order_quantity, is_drop_shipper,
                                item_ordered, state_code, subtotal, order_sku, received_date)
     line_item_json = convert_line_item_to_json(order_line_item)
@@ -170,3 +180,5 @@ for item_ordered in items_array:
 
 print("Purchased_products_list:")
 print(purchased_products_list)
+
+output = [{'purchased_products_list': purchased_products_list}]

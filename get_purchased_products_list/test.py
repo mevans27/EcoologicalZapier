@@ -196,6 +196,14 @@ def test_get_item_description_1():
     assert (actual == expected)
 
 
+def test_get_item_description_2():
+    sku = '3GT-VENT-BLACK'
+    item_description = get_item_description(sku, access_token)
+    expected = '3GT-VENT-BLACK'
+    actual = item_description['data'][0]['fullname']
+    assert (actual == expected)
+
+
 def test_correct_plus_sign_skus():
     test_ordered_items_table = "SKU: BK0310, QTY: 1, Price: 123,\nSKU: BK0310+BK3010, QTY: 2,\nSKU: BK0310, QTY: 1,\nSKU: BK3010, QTY: 1,"
     test_items = correct_plus_sign_skus(test_ordered_items_table)
