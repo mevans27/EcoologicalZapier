@@ -7,7 +7,6 @@ from datetime import timedelta, datetime
 import certifi
 import urllib3
 
-
 access_token = input_data['access_token']
 state_code = input_data['state_code']
 received_date = input_data['received_date']
@@ -35,19 +34,35 @@ class Tax:
 
 class LineItem:
     def __init__(self, item_description, item_quantity, drop_shipper, item_ordered_line, state,
-                 item_subtotal, item_sku, item_received_date):
+                 item_subtotal, item_sku, item_received_date, item_counter):
+        self.lineNumber = item_counter
         self.item = json.dumps(Item(item_description['data'][0]['fullname']).__dict__)
         self.Class = json.dumps(Class().__dict__)
+        self.job = None
+        self.workcenter = None
         self.tax = json.dumps(Tax(self.get_taxable(state)).__dict__)
+        self.linkedTransaction = None
         self.description = item_description['data'][0]['description']
         self.quantity = item_quantity
+        self.weight = 0.00
+        self.volume = 0.00
         self.weightunit = "lb"
         self.volumeunit = "cbm"
         self.percentdiscount = self.get_final_individual_item_discount(0, drop_shipper)
         self.unitprice = self.get_override_price(self.percentdiscount, item_ordered_line, item_subtotal)
         self.amount = self.get_final_calculated_amount(self.unitprice, item_quantity)
+        self.altAmount = 0.00
+        self.picked = 0.00
+        self.shipped = 0.00
+        self.returned = 0.00
+        self.cost = None
+        self.margin = None
         self.listPrice = item_subtotal
         self.duedate = self.get_due_date(item_received_date, self.get_business_days(self.description, item_sku))
+        self.uom = None
+        self.bin = None
+        self.lot = None
+        self.serials = None
 
     @staticmethod
     def get_taxable(state):
@@ -87,9 +102,7 @@ class LineItem:
 
     @staticmethod
     def get_business_days(item_description, item_sku):
-        if re.search('MG|SS|AB', item_sku):
-            business_days = 56
-        elif re.search('Tacoma|Toyota', item_description, re.IGNORECASE):
+        if re.search('Tacoma|Toyota', item_description, re.IGNORECASE):
             business_days = 10
         elif re.search('Aerobox', item_description, re.IGNORECASE):
             business_days = 5
@@ -103,7 +116,7 @@ class LineItem:
     def get_due_date(item_received_date, business_days):
         formatted_received_date: datetime = datetime.strptime(item_received_date, "%Y-%m-%d")
         due_date = formatted_received_date + timedelta(days=business_days)
-        return due_date.strftime("%Y-%m-%d")
+        return due_date.strftime("%Y-%m-%d") + "T00:00:00"
 
 
 def get_item_description(sku, token):
@@ -127,6 +140,11 @@ def get_item_description(sku, token):
     )
 
     json_object = json.loads(resp.data.decode("utf-8"))
+
+    if json_object['count'] == 0:
+        message = "SKU: " + sku + ", not found in SOS Inventory, please add it and re-run this Zap using the order JSON backed up in Zapier: https://tables.zapier.com/app/tables/t/01H2E4ZS8BE994ESEC8S7BMDSS. Submission link: https://form-8b1992.zapier.app/"
+        print(message)
+        raise TypeError(message)
     return json_object
 
 
@@ -168,15 +186,17 @@ items = correct_plus_sign_skus(table_of_items_ordered)
 
 purchased_products_list = []
 items_array = items.split('\n')
+counter = 1
 for item_ordered in items_array:
-    order_quantity = re.search(r'(?<=QTY: )\d+(?=,)', item_ordered, re.IGNORECASE).group().strip()
+    order_quantity = int(re.search(r'(?<=QTY: )\d+(?=,)', item_ordered, re.IGNORECASE).group().strip())
     order_sku = re.search(r'(?<=SKU: )(.*?)(?=,)', item_ordered, re.IGNORECASE).group().strip()
     order_item_description = get_item_description(order_sku, access_token)
     print(order_item_description)
     order_line_item = LineItem(order_item_description, order_quantity, is_drop_shipper,
-                               item_ordered, state_code, subtotal, order_sku, received_date)
+                               item_ordered, state_code, subtotal, order_sku, received_date, counter)
     line_item_json = convert_line_item_to_json(order_line_item)
     purchased_products_list.append(line_item_json)
+    counter += 1
 
 print("Purchased_products_list:")
 print(purchased_products_list)
