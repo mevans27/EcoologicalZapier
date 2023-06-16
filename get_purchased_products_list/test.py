@@ -1,4 +1,5 @@
 from main import *
+import pytest
 
 
 # Note: You will likely need to change the token to the most recent. You can grab it from Zapier.
@@ -169,21 +170,21 @@ class TestLineItem:
     def test_get_due_date_with_month_overlap(self):
         item_received_date = '2023-03-31'
         business_days = 10
-        expected = '2023-04-10'
+        expected = '2023-04-10T00:00:00'
         actual = LineItem.get_due_date(item_received_date, business_days)
         assert (actual == expected)
 
     def test_get_due_date_with_month_no_overlap(self):
         item_received_date = '2023-03-11'
         business_days = 20
-        expected = '2023-03-31'
+        expected = '2023-03-31T00:00:00'
         actual = LineItem.get_due_date(item_received_date, business_days)
         assert (actual == expected)
 
     def test_get_due_date_with_longest_days(self):
         item_received_date = '2023-03-31'
         business_days = 56
-        expected = '2023-05-26'
+        expected = '2023-05-26T00:00:00'
         actual = LineItem.get_due_date(item_received_date, business_days)
         assert (actual == expected)
 
@@ -204,10 +205,17 @@ def test_get_item_description_2():
     assert (actual == expected)
 
 
+def test_get_item_description_unknown_sku():
+    sku = 'unknown_sku'
+    with pytest.raises(TypeError):
+        get_item_description(sku, access_token)
+
+
 def test_correct_plus_sign_skus():
     test_ordered_items_table = "SKU: BK0310, QTY: 1, Price: 123,\nSKU: BK0310+BK3010, QTY: 2,\nSKU: BK0310, QTY: 1,\nSKU: BK3010, QTY: 1,"
     test_items = correct_plus_sign_skus(test_ordered_items_table)
-    assert (test_items == "SKU: BK0310, QTY: 1, Price: 123,\nSKU: BK0310, QTY: 2,\nSKU: BK3010, QTY: 2,\nSKU: BK0310, QTY: 1,\nSKU: BK3010, QTY: 1,")
+    assert (
+            test_items == "SKU: BK0310, QTY: 1, Price: 123,\nSKU: BK0310, QTY: 2,\nSKU: BK3010, QTY: 2,\nSKU: BK0310, QTY: 1,\nSKU: BK3010, QTY: 1,")
 
 
 def test_convert_line_item_to_json():
@@ -219,9 +227,11 @@ def test_convert_line_item_to_json():
     line_is_drop_shipper = "false"
     line_item_ordered = "SKU: BK0310, Qty: 1, Price: 100.00,"
     line_subtotal = 20
+    line_counter = 1
     item_description = get_item_description(line_order_sku, access_token)
     line_item = LineItem(item_description, line_quantity, line_is_drop_shipper,
-                         line_item_ordered, line_state_code, line_subtotal, line_order_sku, line_received_date)
+                         line_item_ordered, line_state_code, line_subtotal, line_order_sku, line_received_date,
+                         line_counter)
     line_item_json_converted = convert_line_item_to_json(line_item)
 
     json_test = json.loads(line_item_json_converted)
@@ -229,7 +239,7 @@ def test_convert_line_item_to_json():
     assert (json_test['amount'] == 100.00)
     assert (json_test[
                 'description'] == "Make: CHEVY     Model: SILVERADO 1500     Year:'14-'15 Location: FRONT BUMPER Color: GLOSS WHITE Alt1: NO sensor holes Alt1: WITH fog lamps # of Pieces: 3")
-    assert (json_test['duedate'] == "2021-01-11")
+    assert (json_test['duedate'] == "2021-01-11T00:00:00")
     assert (json_test['item']['name'] == "BumperShellz:BK0310")
     assert (json_test['listPrice'] == 20.00)
     assert (json_test['percentdiscount'] == 0.00)
@@ -237,3 +247,4 @@ def test_convert_line_item_to_json():
     assert (json_test['tax']['taxable'] is True)
     assert (json_test['tax']['taxCode'] is None)
     assert (json_test['unitprice'] == 100.00)
+    assert (json_test['lineNumber'] == 1)
