@@ -148,21 +148,21 @@ class TestLineItem:
     def test_get_business_days_with_toyota_nonstandard_sku_mg(self):
         item_description = "Make: CHEVY     Model: SILVERADO 1500     Year:'14-'15\nLocation: FRONT BUMPER\nColor: GLOSS WHITE\nAlt1: NO sensor holes\nAlt1: WITH fog lamps\n# of Pieces: 3"
         item_sku = 'MG1234'
-        expected = 56
+        expected = 10
         actual = LineItem.get_business_days(item_description, item_sku)
         assert (actual == expected)
 
     def test_get_business_days_with_toyota_nonstandard_sku_ss(self):
         item_description = "Make: CHEVY     Model: SILVERADO 1500     Year:'14-'15\nLocation: FRONT BUMPER\nColor: GLOSS WHITE\nAlt1: NO sensor holes\nAlt1: WITH fog lamps\n# of Pieces: 3"
         item_sku = 'SS1234'
-        expected = 56
+        expected = 10
         actual = LineItem.get_business_days(item_description, item_sku)
         assert (actual == expected)
 
     def test_get_business_days_with_toyota_nonstandard_sku_ab(self):
         item_description = "Make: CHEVY     Model: SILVERADO 1500     Year:'14-'15\nLocation: FRONT BUMPER\nColor: GLOSS WHITE\nAlt1: NO sensor holes\nAlt1: WITH fog lamps\n# of Pieces: 3"
         item_sku = 'AB1234'
-        expected = 56
+        expected = 10
         actual = LineItem.get_business_days(item_description, item_sku)
         assert (actual == expected)
 
