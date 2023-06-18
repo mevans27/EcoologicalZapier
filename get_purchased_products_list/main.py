@@ -12,7 +12,7 @@ state_code = input_data['state_code']
 received_date = input_data['received_date']
 is_drop_shipper = input_data['is_drop_shipper']
 subtotal = input_data['subtotal']
-table_of_items_ordered = input_data['table_of_items_ordered']
+table_of_items_ordered = input_data['items_ordered']
 
 
 class Class:
@@ -34,7 +34,7 @@ class Tax:
 
 class LineItem:
     def __init__(self, item_description, item_quantity, drop_shipper, item_ordered_line, state,
-                 item_subtotal, item_sku, item_received_date, item_counter):
+                 item_subtotal, item_received_date, item_counter):
         self.lineNumber = item_counter
         self.item = json.dumps(Item(item_description['data'][0]['fullname']).__dict__)
         self.Class = json.dumps(Class().__dict__)
@@ -58,7 +58,7 @@ class LineItem:
         self.cost = None
         self.margin = None
         self.listPrice = item_subtotal
-        self.duedate = self.get_due_date(item_received_date, self.get_business_days(self.description, item_sku))
+        self.duedate = self.get_due_date(item_received_date, self.get_business_days(self.description))
         self.uom = None
         self.bin = None
         self.lot = None
@@ -101,7 +101,7 @@ class LineItem:
         return final_calculated_amount
 
     @staticmethod
-    def get_business_days(item_description, item_sku):
+    def get_business_days(item_description):
         if re.search('Tacoma|Toyota', item_description, re.IGNORECASE):
             business_days = 10
         elif re.search('Aerobox', item_description, re.IGNORECASE):
@@ -193,7 +193,7 @@ for item_ordered in items_array:
     order_item_description = get_item_description(order_sku, access_token)
     print(order_item_description)
     order_line_item = LineItem(order_item_description, order_quantity, is_drop_shipper,
-                               item_ordered, state_code, subtotal, order_sku, received_date, counter)
+                               item_ordered, state_code, subtotal, received_date, counter)
     line_item_json = convert_line_item_to_json(order_line_item)
     purchased_products_list.append(line_item_json)
     counter += 1
