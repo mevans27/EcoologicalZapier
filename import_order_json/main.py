@@ -1,5 +1,6 @@
 from input_data import *
 
+import re
 from urllib.request import urlopen
 import json
 
@@ -8,11 +9,7 @@ url = input_data["url"]
 with urlopen(url) as file:
     content = file.read().decode()
 
-print("content before replace", content)
-
 content = content.replace('\\\"', "")
-
-print("content after replace", content)
 
 json_object = json.loads(content)
 
@@ -24,6 +21,7 @@ total_discounts = json_object["total_discounts"]
 total_tax = json_object["total_tax"]
 updated_at = json_object["updated_at"]
 line_items_sku = json_object["line_items_sku"]
+line_items_sku = "\n".join(re.findall(r'^(\S+)', line_items_sku))
 line_items_quantity = json_object["line_items_quantity"]
 line_items_vendor = json_object["line_items_vendor"]
 if line_items_vendor == "null" or line_items_vendor == "" or line_items_vendor == '\"\"':
