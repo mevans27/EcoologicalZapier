@@ -1,3 +1,5 @@
+from input_data import *
+
 import re
 from datetime import datetime
 from typing import Iterable, Any, Tuple
@@ -5,10 +7,16 @@ import urllib3
 import certifi
 import json
 import time
-from input_data import *
 
 connect_timeout = 10.0
 read_timeout = 20.0
+payment_gateway_names = input_data['payment_gateway_names']
+access_token = input_data['access_token']
+sku_line_items = input_data['sku_line_items']
+qty_line_items = input_data['qty_line_items']
+vendor_line_items = input_data['vendor_line_items']
+price_line_items = input_data['price_line_items']
+date_time_str = input_data['date_time_str']
 
 
 def signal_last(it: Iterable[Any]) -> Iterable[Tuple[bool, Any]]:
@@ -191,6 +199,8 @@ def get_payment_gateway_names(payment_names):
         payment_names = "AUTH.NET"
     elif payment_names == "paypal":
         payment_names = "paypal"
+    elif payment_names == "Net 30":
+        payment_names = "Net 30"
     else:
         payment_names = "Due on receipt"
     return payment_names
@@ -201,6 +211,7 @@ http = urllib3.PoolManager(
     ca_certs=certifi.where(),
     timeout=urllib3.Timeout(connect=connect_timeout, read=read_timeout)
 )
+
 payment_gateway_names = payment_gateway_names.replace('+', '')
 sku_line_items_list = convert(sku_line_items)
 print("sku_line_items_list:", sku_line_items_list)
@@ -225,6 +236,6 @@ date_time = str(date_time_obj.time())
 # Convert authorize_net to authorize.net
 payment_gateway_names = get_payment_gateway_names(payment_gateway_names)
 
-output = [{'date': date, 'time': date_time, 'table_of_items_ordered': table_of_items_ordered,
+output = [{'date': date, 'time': date_time, 'items_ordered': table_of_items_ordered,
            'drop_shipper_table_of_items_ordered': drop_shipper_table_of_items_ordered,
            'payment_names': payment_gateway_names, 'vendor_set_string': vendor_set_string}]
