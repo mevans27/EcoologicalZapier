@@ -26,6 +26,9 @@ updated_at = json_object["updated_at"]
 line_items_sku = json_object["line_items_sku"]
 line_items_quantity = json_object["line_items_quantity"]
 line_items_vendor = json_object["line_items_vendor"]
+if line_items_vendor == "null" or line_items_vendor == "" or line_items_vendor == '\"\"':
+    print("line_items_vendor is null or empty")
+    line_items_vendor = "Ecoological"
 line_items_price = json_object["line_items_price"]
 payment_gateway_names = json_object["payment_gateway_names"]
 customer_default_address_province_code = json_object["customer_default_address_province_code"]
