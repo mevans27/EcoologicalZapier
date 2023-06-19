@@ -28,7 +28,7 @@ def clean_purchased_products_list(item_purchased_products_list):
     item_purchased_products_list = json.loads(item_purchased_products_list)
     return item_purchased_products_list
 
-def get_drop_shipper_variables(is_drop_shipper, input_data, customer_default_address_name, customer_default_address_phone, email, customer_default_address_line1, customer_default_address_line2, customer_default_address_city, customer_default_address_province_code, customer_default_address_zip, customer_default_address_country_code):
+def get_drop_shipper_variables(is_drop_shipper, is_billing_information_specified, input_data, customer_default_address_name, customer_default_address_phone, email, customer_default_address_line1, customer_default_address_line2, customer_default_address_city, customer_default_address_province_code, customer_default_address_zip, customer_default_address_country_code):
     if is_drop_shipper == "true":
         billing_customer_default_address_name = input_data['billing_customer_default_address_name']
         billing_customer_default_address_phone = input_data['billing_customer_default_address_phone']
@@ -43,15 +43,29 @@ def get_drop_shipper_variables(is_drop_shipper, input_data, customer_default_add
         billing_customer_default_address_country_code = input_data['billing_customer_default_address_country_code']
         email = billing_email  # For dropshippers, the Shipping email comes from the dropshipper not the end customer
     else:
-        billing_customer_default_address_name = customer_default_address_name
-        billing_customer_default_address_phone = customer_default_address_phone
-        billing_email = email
-        billing_customer_default_address_line1 = customer_default_address_line1
-        billing_customer_default_address_line2 = customer_default_address_line2
-        billing_customer_default_address_city = customer_default_address_city
-        billing_customer_default_address_province_code = customer_default_address_province_code
-        billing_customer_default_address_zip = customer_default_address_zip
-        billing_customer_default_address_country_code = customer_default_address_country_code
+        if is_billing_information_specified == "true":
+            billing_customer_default_address_name = input_data['billing_customer_default_address_name']
+            billing_customer_default_address_phone = input_data['billing_customer_default_address_phone']
+            billing_email = input_data['billing_email']
+            billing_customer_default_address_line1 = input_data['billing_customer_default_address_line1']
+            billing_customer_default_address_line2 = input_data['billing_customer_default_address_line2']
+            if billing_customer_default_address_line2 == "null" or billing_customer_default_address_line2 == "" or billing_customer_default_address_line2 == '\"\"':
+                billing_customer_default_address_line2 = None
+            billing_customer_default_address_city = input_data['billing_customer_default_address_city']
+            billing_customer_default_address_province_code = input_data[
+                'billing_customer_default_address_province_code']
+            billing_customer_default_address_zip = input_data['billing_customer_default_address_zip']
+            billing_customer_default_address_country_code = input_data['billing_customer_default_address_country_code']
+        else:
+            billing_customer_default_address_name = customer_default_address_name
+            billing_customer_default_address_phone = customer_default_address_phone
+            billing_email = email
+            billing_customer_default_address_line1 = customer_default_address_line1
+            billing_customer_default_address_line2 = customer_default_address_line2
+            billing_customer_default_address_city = customer_default_address_city
+            billing_customer_default_address_province_code = customer_default_address_province_code
+            billing_customer_default_address_zip = customer_default_address_zip
+            billing_customer_default_address_country_code = customer_default_address_country_code
 
     return billing_customer_default_address_name, billing_customer_default_address_phone, billing_email, billing_customer_default_address_line1, billing_customer_default_address_line2, billing_customer_default_address_city, billing_customer_default_address_province_code, billing_customer_default_address_zip, billing_customer_default_address_country_code, email
 
@@ -80,8 +94,9 @@ customer_default_address_country_code = input_data['customer_default_address_cou
 total_shipping_price_set_shop_money_amount = input_data['total_shipping_price_set_shop_money_amount']
 purchased_products_list = clean_purchased_products_list(input_data['purchased_products_list'])
 is_drop_shipper = input_data['is_drop_shipper']
+is_billing_information_specified = input_data['is_billing_information_specified']
 
-billing_customer_default_address_name, billing_customer_default_address_phone, billing_email, billing_customer_default_address_line1, billing_customer_default_address_line2, billing_customer_default_address_city, billing_customer_default_address_province_code, billing_customer_default_address_zip, billing_customer_default_address_country_code, email = get_drop_shipper_variables(is_drop_shipper, input_data, customer_default_address_name, customer_default_address_phone, email, customer_default_address_line1, customer_default_address_line2, customer_default_address_city, customer_default_address_province_code, customer_default_address_zip, customer_default_address_country_code)
+billing_customer_default_address_name, billing_customer_default_address_phone, billing_email, billing_customer_default_address_line1, billing_customer_default_address_line2, billing_customer_default_address_city, billing_customer_default_address_province_code, billing_customer_default_address_zip, billing_customer_default_address_country_code, email = get_drop_shipper_variables(is_drop_shipper, is_billing_information_specified, input_data, customer_default_address_name, customer_default_address_phone, email, customer_default_address_line1, customer_default_address_line2, customer_default_address_city, customer_default_address_province_code, customer_default_address_zip, customer_default_address_country_code)
 
 
 
