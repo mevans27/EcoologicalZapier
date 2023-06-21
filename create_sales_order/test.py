@@ -1,4 +1,4 @@
-from main import *
+from main import clean_purchased_products_list, create_body, get_drop_shipper_variables
 
 
 def test_clean_purchased_products_list_multiple_line_items():
@@ -50,7 +50,7 @@ def test_create_body_not_drop_shipper():
                             'Maderia Beach', 'Maderia Beach',
                             'FL', 'FL',
                             '33708', '33708',
-                            'US', 'US')
+                            'US', 'US', '0')
     assert (test_body['customer']['name'] == 'John Doe')
     assert (test_body['date'] == '2022-05-11T08:28:55-04:00')
     assert (test_body['billing']['contact'] == 'John Doe')
@@ -71,7 +71,7 @@ def test_create_body_drop_shipper():
                             'Maderia Beach', 'Turn5 City',
                             'FL', 'GA',
                             '33708', '12345',
-                            'US', 'US')
+                            'US', 'US', '0')
     assert (test_body['customer']['name'] == 'Turn5')
     assert (test_body['date'] == '2022-05-11T08:28:55-04:00')
     assert (test_body['billing']['contact'] == 'Turn5')

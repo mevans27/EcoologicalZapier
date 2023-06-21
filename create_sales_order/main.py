@@ -6,6 +6,11 @@ import json
 import time
 import ast
 
+for key in input_data:
+    if input_data[key] is None or input_data[key] == '\"\"':
+        input_data[key] = ""
+    input_data[key] = input_data[key].strip('\"')
+
 
 def create_new_sales_order(api_body, request_access_token):
     time.sleep(1)
@@ -78,6 +83,7 @@ subtotal_price = input_data['subtotal_price']
 formatted_discount_text = -abs(float(input_data['formatted_discount_text']))
 tax_percent = input_data['tax_percent']
 taxable = input_data['taxable']
+tax = input_data['tax']
 calculated_total = input_data['calculated_total']
 payment_names = input_data['payment_names']
 customer_default_address_province_code = input_data['customer_default_address_province_code']
@@ -119,14 +125,14 @@ def create_body(name, updated_at, payment_names, is_drop_shipper, total_shipping
                 customer_default_address_city, billing_customer_default_address_city,
                 customer_default_address_province_code, billing_customer_default_address_province_code,
                 customer_default_address_zip, billing_customer_default_address_zip,
-                customer_default_address_country_code, billing_customer_default_address_country_code):
+                customer_default_address_country_code, billing_customer_default_address_country_code, tax):
     body = {
         "starred": 0,
         "syncToken": 0,
         "number": "auto",
         "date": updated_at,
         "customer": {
-            "name": billing_customer_default_address_name
+            "name": customer_default_address_name
         },
         "location": {
             "id": 1,
@@ -225,7 +231,7 @@ def create_body(name, updated_at, payment_names, is_drop_shipper, total_shipping
         "discountPercent": 0.00000,
         "discountAmount": formatted_discount_text,
         "taxPercent": tax_percent,
-        "taxAmount": 0.00,
+        "taxAmount": tax,
         "shippingAmount": total_shipping_price_set_shop_money_amount,
         "total": calculated_total,
         "discountTaxable": taxable,
@@ -252,7 +258,7 @@ body = create_body(name, updated_at, payment_names, is_drop_shipper, total_shipp
                 customer_default_address_city, billing_customer_default_address_city,
                 customer_default_address_province_code, billing_customer_default_address_province_code,
                 customer_default_address_zip, billing_customer_default_address_zip,
-                customer_default_address_country_code, billing_customer_default_address_country_code)
+                customer_default_address_country_code, billing_customer_default_address_country_code, tax)
 print("body:", body)
 create_sales_order_json = create_new_sales_order(body,access_token)
 output = [{'create_sales_order_json': create_sales_order_json}]
