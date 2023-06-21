@@ -70,7 +70,7 @@ def test_check_if_vendor_already_exists():
 
 
 def test_get_tables_of_items_ordered():
-    merged_item_list = [('sku1', 'qty1', 'vendor1', 'price1'), ('sku2', 'qty2', 'vendor2', 'price2'), ('sku3', 'qty3', 'vendor3', 'price3')]
+    merged_item_list = [("EF0212", "EF0412", "DF3012"), ('1', '2', '3'), ('Ecoological', 'Ecoological', 'Ecoological'), ('10', '20', '30')]
     (items_ordered, drop_shipper_items_ordered, item_vendor_set) = get_tables_of_items_ordered(merged_item_list)
     assert (items_ordered == 'SKU: sku1, Qty: qty1, Price: price1,\nSKU: sku2, Qty: qty2, Price: price2,\nSKU: sku3, Qty: qty3, Price: price3,')
     assert (drop_shipper_items_ordered == 'Vendor:vendor1, SKU: sku1, Qty: qty1, Price: price1;Vendor:vendor2, SKU: sku2, Qty: qty2, Price: price2;Vendor:vendor3, SKU: sku3, Qty: qty3, Price: price3;')
