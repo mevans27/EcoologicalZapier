@@ -114,56 +114,56 @@ class TestLineItem:
         item_description = "Make: CHEVY     Model: SILVERADO 1500     Year:'14-'15\nLocation: FRONT BUMPER\nColor: GLOSS WHITE\nAlt1: NO sensor holes\nAlt1: WITH fog lamps\n# of Pieces: 3"
         item_sku = 'BK0310'
         expected = 10
-        actual = LineItem.get_business_days(item_description, item_sku)
+        actual = LineItem.get_business_days(item_description)
         assert (actual == expected)
 
     def test_get_business_days_with_toyota_standard_sku(self):
         item_description = "Make: TOYOTA     Model: PRIUS     Year:'14-'15\nLocation: FRONT BUMPER\nColor: GLOSS WHITE\nAlt1: NO sensor holes\nAlt1: WITH fog lamps\n# of Pieces: 3"
         item_sku = 'BK0310'
         expected = 10
-        actual = LineItem.get_business_days(item_description, item_sku)
+        actual = LineItem.get_business_days(item_description)
         assert (actual == expected)
 
     def test_get_business_days_with_tacoma_standard_sku(self):
         item_description = "Make:   Model: TACOMA     Year:'14-'15\nLocation: FRONT BUMPER\nColor: GLOSS WHITE\nAlt1: NO sensor holes\nAlt1: WITH fog lamps\n# of Pieces: 3"
         item_sku = 'BK0310'
         expected = 10
-        actual = LineItem.get_business_days(item_description, item_sku)
+        actual = LineItem.get_business_days(item_description)
         assert (actual == expected)
 
     def test_get_business_days_with_aerobox_standard_sku(self):
         item_description = "Make:   Model: AEROBOX     Year:'14-'15\nLocation: FRONT BUMPER\nColor: GLOSS WHITE\nAlt1: NO sensor holes\nAlt1: WITH fog lamps\n# of Pieces: 3"
         item_sku = 'BK0310'
         expected = 5
-        actual = LineItem.get_business_days(item_description, item_sku)
+        actual = LineItem.get_business_days(item_description)
         assert (actual == expected)
 
     def test_get_business_days_with_gapshield_standard_sku(self):
         item_description = "Make:   Model: GAPSHIELD     Year:'14-'15\nLocation: FRONT BUMPER\nColor: GLOSS WHITE\nAlt1: NO sensor holes\nAlt1: WITH fog lamps\n# of Pieces: 3"
         item_sku = 'BK0310'
         expected = 3
-        actual = LineItem.get_business_days(item_description, item_sku)
+        actual = LineItem.get_business_days(item_description)
         assert (actual == expected)
 
     def test_get_business_days_with_toyota_nonstandard_sku_mg(self):
         item_description = "Make: CHEVY     Model: SILVERADO 1500     Year:'14-'15\nLocation: FRONT BUMPER\nColor: GLOSS WHITE\nAlt1: NO sensor holes\nAlt1: WITH fog lamps\n# of Pieces: 3"
         item_sku = 'MG1234'
         expected = 10
-        actual = LineItem.get_business_days(item_description, item_sku)
+        actual = LineItem.get_business_days(item_description)
         assert (actual == expected)
 
     def test_get_business_days_with_toyota_nonstandard_sku_ss(self):
         item_description = "Make: CHEVY     Model: SILVERADO 1500     Year:'14-'15\nLocation: FRONT BUMPER\nColor: GLOSS WHITE\nAlt1: NO sensor holes\nAlt1: WITH fog lamps\n# of Pieces: 3"
         item_sku = 'SS1234'
         expected = 10
-        actual = LineItem.get_business_days(item_description, item_sku)
+        actual = LineItem.get_business_days(item_description)
         assert (actual == expected)
 
     def test_get_business_days_with_toyota_nonstandard_sku_ab(self):
         item_description = "Make: CHEVY     Model: SILVERADO 1500     Year:'14-'15\nLocation: FRONT BUMPER\nColor: GLOSS WHITE\nAlt1: NO sensor holes\nAlt1: WITH fog lamps\n# of Pieces: 3"
         item_sku = 'AB1234'
         expected = 10
-        actual = LineItem.get_business_days(item_description, item_sku)
+        actual = LineItem.get_business_days(item_description)
         assert (actual == expected)
 
     # Testing get_due_date
@@ -230,7 +230,7 @@ def test_convert_line_item_to_json():
     line_counter = 1
     item_description = get_item_description(line_order_sku, access_token)
     line_item = LineItem(item_description, line_quantity, line_is_drop_shipper,
-                         line_item_ordered, line_state_code, line_subtotal, line_order_sku, line_received_date,
+                         line_item_ordered, line_state_code, line_subtotal, line_received_date,
                          line_counter)
     line_item_json_converted = convert_line_item_to_json(line_item)
 
@@ -241,7 +241,7 @@ def test_convert_line_item_to_json():
                 'description'] == "Make: CHEVY     Model: SILVERADO 1500     Year:'14-'15 Location: FRONT BUMPER Color: GLOSS WHITE Alt1: NO sensor holes Alt1: WITH fog lamps # of Pieces: 3")
     assert (json_test['duedate'] == "2021-01-11T00:00:00")
     assert (json_test['item']['name'] == "BumperShellz:BK0310")
-    assert (json_test['listPrice'] == 20.00)
+    assert (json_test['listPrice'] == 100.00)
     assert (json_test['percentdiscount'] == 0.00)
     assert (json_test['quantity'] == 1)
     assert (json_test['tax']['taxable'] is True)

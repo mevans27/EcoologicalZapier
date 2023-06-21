@@ -3,6 +3,7 @@ from input_data import *
 import json
 import re
 from datetime import timedelta, datetime
+import os
 
 import certifi
 import urllib3
@@ -13,6 +14,7 @@ received_date = input_data['received_date']
 is_drop_shipper = input_data['is_drop_shipper']
 subtotal = input_data['subtotal']
 table_of_items_ordered = input_data['items_ordered']
+table_of_items_ordered = os.linesep.join([s for s in table_of_items_ordered.splitlines() if s])
 
 
 class Class:
@@ -57,7 +59,7 @@ class LineItem:
         self.returned = 0.00
         self.cost = None
         self.margin = None
-        self.listPrice = item_subtotal
+        self.listPrice = self.unitprice
         self.duedate = self.get_due_date(item_received_date, self.get_business_days(self.description))
         self.uom = None
         self.bin = None
@@ -175,6 +177,9 @@ def correct_plus_sign_skus(items_table):
             sku2 = re.search(r'(?<=\+)(.*)(?=, QTY:)', row, re.IGNORECASE).group().strip()
             final_ordered_items_table_string += f"SKU: {sku1}, QTY: {qty},\n"
             final_ordered_items_table_string += f"SKU: {sku2}, QTY: {qty},"
+        elif row is None or row == "" or row == "\n" or row == " " or row == "\t" or row == "\r":
+            print("found empty row, ignoring")
+            continue
         else:
             final_ordered_items_table_string += row
         if i < len(input_array) - 1:
