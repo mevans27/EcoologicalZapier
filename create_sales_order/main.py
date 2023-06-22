@@ -50,6 +50,11 @@ def get_drop_shipper_variables(is_drop_shipper, is_billing_information_specified
     else:
         if is_billing_information_specified == "true":
             billing_customer_default_address_name = input_data['billing_customer_default_address_name']
+            if (billing_customer_default_address_name == None or billing_customer_default_address_name == "" or billing_customer_default_address_name == " " or billing_customer_default_address_name == '\"\"'):
+                is_billing_information_specified = "false"
+
+        if is_billing_information_specified == "true":
+            billing_customer_default_address_name = input_data['billing_customer_default_address_name']
             billing_customer_default_address_phone = input_data['billing_customer_default_address_phone']
             billing_email = input_data['billing_email']
             billing_customer_default_address_line1 = input_data['billing_customer_default_address_line1']
@@ -73,6 +78,7 @@ def get_drop_shipper_variables(is_drop_shipper, is_billing_information_specified
             billing_customer_default_address_country_code = customer_default_address_country_code
 
     return billing_customer_default_address_name, billing_customer_default_address_phone, billing_email, billing_customer_default_address_line1, billing_customer_default_address_line2, billing_customer_default_address_city, billing_customer_default_address_province_code, billing_customer_default_address_zip, billing_customer_default_address_country_code, email
+
 
 
 access_token = input_data["access_token"]
@@ -101,7 +107,7 @@ total_shipping_price_set_shop_money_amount = input_data['total_shipping_price_se
 purchased_products_list = clean_purchased_products_list(input_data['purchased_products_list'])
 is_drop_shipper = input_data['is_drop_shipper']
 is_billing_information_specified = input_data['is_billing_information_specified']
-
+notes = input_data['notes']
 billing_customer_default_address_name, billing_customer_default_address_phone, billing_email, billing_customer_default_address_line1, billing_customer_default_address_line2, billing_customer_default_address_city, billing_customer_default_address_province_code, billing_customer_default_address_zip, billing_customer_default_address_country_code, email = get_drop_shipper_variables(is_drop_shipper, is_billing_information_specified, input_data, customer_default_address_name, customer_default_address_phone, email, customer_default_address_line1, customer_default_address_line2, customer_default_address_city, customer_default_address_province_code, customer_default_address_zip, customer_default_address_country_code)
 
 
@@ -125,14 +131,19 @@ def create_body(name, updated_at, payment_names, is_drop_shipper, total_shipping
                 customer_default_address_city, billing_customer_default_address_city,
                 customer_default_address_province_code, billing_customer_default_address_province_code,
                 customer_default_address_zip, billing_customer_default_address_zip,
-                customer_default_address_country_code, billing_customer_default_address_country_code, tax):
+                customer_default_address_country_code, billing_customer_default_address_country_code, tax, notes):
+    if is_drop_shipper == "true":
+        customer_name = billing_customer_default_address_name
+    else:
+        customer_name = customer_default_address_name
+
     body = {
         "starred": 0,
         "syncToken": 0,
         "number": "auto",
         "date": updated_at,
         "customer": {
-            "name": customer_default_address_name
+            "name": customer_name
         },
         "location": {
             "id": 1,
@@ -202,7 +213,7 @@ def create_body(name, updated_at, payment_names, is_drop_shipper, total_shipping
         "exchangeRate": 1.0,
         "customerMessage": None,
         "statusMessage": None,
-        "comment": "Porcupine: " + customer_default_address_name + ", PO#: " + name,
+        "comment": "Porcupine: " + customer_default_address_name + ", PO#: " + name + "\n" + notes,
         "customerNotes": "",
         "customFields": [
             {
@@ -258,7 +269,7 @@ body = create_body(name, updated_at, payment_names, is_drop_shipper, total_shipp
                 customer_default_address_city, billing_customer_default_address_city,
                 customer_default_address_province_code, billing_customer_default_address_province_code,
                 customer_default_address_zip, billing_customer_default_address_zip,
-                customer_default_address_country_code, billing_customer_default_address_country_code, tax)
+                customer_default_address_country_code, billing_customer_default_address_country_code, tax, notes)
 print("body:", body)
 create_sales_order_json = create_new_sales_order(body,access_token)
 output = [{'create_sales_order_json': create_sales_order_json}]
