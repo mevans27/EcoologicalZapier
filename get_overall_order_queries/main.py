@@ -41,6 +41,4 @@ calculated_total = float(total_price) - float(total_discounts)
 tax_percent = get_tax_percent(float(total_tax), taxable, float(subtotal_price), float(total_discounts))
 formatted_discount_text = get_formatted_discount_text(float(total_discounts))
 
-output = [{'taxable': taxable, 'calculated_total': calculated_total, 'tax_percent': tax_percent,
-           'formatted_discount_text': formatted_discount_text}]
-print(output)
+output = [{'taxable': taxable, 'calculated_total': calculated_total, 'tax_percent': tax_percent, 'formatted_discount_text': formatted_discount_text}]
