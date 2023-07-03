@@ -104,7 +104,9 @@ class LineItem:
 
     @staticmethod
     def get_business_days(item_description):
-        if re.search('Tacoma|Toyota', item_description, re.IGNORECASE):
+        if item_description is None:
+            business_days = 10
+        elif re.search('Tacoma|Toyota', item_description, re.IGNORECASE):
             business_days = 10
         elif re.search('Aerobox', item_description, re.IGNORECASE):
             business_days = 5
@@ -117,8 +119,16 @@ class LineItem:
     @staticmethod
     def get_due_date(item_received_date, business_days):
         formatted_received_date: datetime = datetime.strptime(item_received_date, "%Y-%m-%d")
-        due_date = formatted_received_date + timedelta(days=business_days)
-        return due_date.strftime("%Y-%m-%d") + "T00:00:00"
+        # Add only business days to the received date
+        business_days_to_add = business_days
+        current_date = formatted_received_date
+        while business_days_to_add > 0:
+            current_date += timedelta(days=1)
+            weekday = current_date.weekday()
+            if weekday >= 5:  # sunday = 6
+                continue
+            business_days_to_add -= 1
+        return current_date.strftime("%Y-%m-%d") + "T00:00:00"
 
 
 def get_item_description(sku, token):
