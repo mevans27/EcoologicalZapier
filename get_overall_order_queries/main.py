@@ -1,5 +1,10 @@
 from input_data import *
 
+for key in input_data:
+    if input_data[key] is None or input_data[key] == '\"\"':
+        input_data[key] = ""
+    input_data[key] = ''.join(i for i in input_data[key] if i not in '"')
+
 total_price = input_data['total_price']
 subtotal_price = input_data['subtotal_price']
 total_discounts = input_data['total_discounts']

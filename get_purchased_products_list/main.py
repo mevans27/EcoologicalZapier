@@ -8,6 +8,11 @@ import os
 import certifi
 import urllib3
 
+for key in input_data:
+    if input_data[key] is None or input_data[key] == '\"\"':
+        input_data[key] = ""
+    input_data[key] = ''.join(i for i in input_data[key] if i not in '"')
+
 access_token = input_data['access_token']
 state_code = input_data['state_code']
 received_date = input_data['received_date']
