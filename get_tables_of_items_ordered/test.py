@@ -70,10 +70,11 @@ def test_check_if_vendor_already_exists():
 
 
 def test_get_tables_of_items_ordered():
-    merged_item_list = [("EF0212", "EF0412", "DF3012"), ('1', '2', '3'), ('Ecoological', 'Ecoological', 'Ecoological'), ('10', '20', '30')]
-    (items_ordered, drop_shipper_items_ordered, item_vendor_set) = get_tables_of_items_ordered(merged_item_list)
-    assert (items_ordered == 'SKU: sku1, Qty: qty1, Price: price1,\nSKU: sku2, Qty: qty2, Price: price2,\nSKU: sku3, Qty: qty3, Price: price3,')
-    assert (drop_shipper_items_ordered == 'Vendor:vendor1, SKU: sku1, Qty: qty1, Price: price1;Vendor:vendor2, SKU: sku2, Qty: qty2, Price: price2;Vendor:vendor3, SKU: sku3, Qty: qty3, Price: price3;')
+    test_merged_item_list = (('EF0212', '1', 'Ecoological', '10'), ('EF0412', '2', 'Ecoological', '20'), ('DF3012', '3', 'Tufskinz', '30'), ('DF3012', '4', 'Trim Illusion', '40'))
+    print(test_merged_item_list)
+    items_ordered, drop_shipper_items_ordered, test_vendor_set = get_tables_of_items_ordered(test_merged_item_list)
+    assert (items_ordered == 'SKU: EF0212, Qty: 1, Price: 10,\nSKU: EF0412, Qty: 2, Price: 20,\nSKU: DF3012, Qty: 3, Price: 30,\nSKU: DF3012, Qty: 4, Price: 40,')
+    assert (drop_shipper_items_ordered == 'Vendor:Tufskinz, SKU: DF3012, Qty: 3, Price: 30;Vendor:Trim Illusion, SKU: DF3012, Qty: 4, Price: 40;')
 
 
 def test_get_payment_gateway_names():

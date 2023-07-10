@@ -2,7 +2,7 @@ from main import *
 import pytest
 
 
-# Note: You will likely need to change the token to the most recent. You can grab it from Zapier.
+# Note: You will likely need to change the access_token to the most recent. You can grab it from Zapier.
 
 
 class TestLineItem:
