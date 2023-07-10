@@ -117,6 +117,13 @@ http_instance = urllib3.PoolManager(
     ca_certs=certifi.where(),
     timeout=urllib3.Timeout(connect=connect_timeout, read=read_timeout)
 )
+
+# Find and replace ", SKU" or ",SKU" in table_of_items_ordered with ",\nSKU" ignoring case
+
+table_of_items_ordered = re.sub(r',.?SKU', ',\nSKU', table_of_items_ordered, re.IGNORECASE)
+
+print("table_of_items_ordered:\n", table_of_items_ordered)
+
 table_of_items_ordered = correct_plus_sign_skus(table_of_items_ordered)
 sku_table = get_sku_table(table_of_items_ordered)
 price_table = get_price_table(table_of_items_ordered, http_instance, access_token)
