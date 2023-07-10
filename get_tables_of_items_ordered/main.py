@@ -40,7 +40,7 @@ def merge(list1, list2, list3, list4):
 
 def grab_sku_object_from_sos(item_sku, token):
     time.sleep(1)
-    print("token: " + token)
+    print("access_token: " + token)
     resp = http.request(
         "GET",
         "https://api.sosinventory.com/api/v2/item?start=0&maxresults=1&query=" + item_sku,
@@ -58,7 +58,7 @@ def grab_sku_object_from_sos(item_sku, token):
 
 def grab_vendor_object_from_sos(item_vendor, token):
     time.sleep(1)
-    print("token: " + token)
+    print("access_token: " + token)
     resp = http.request(
         "GET",
         "https://api.sosinventory.com/api/v2/vendor?start=0&maxresults=1&query="
