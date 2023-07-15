@@ -44,19 +44,19 @@ def test_create_body_not_drop_shipper():
                             'false', '0', '38', '0.00', '30',
                             'John Doe', 'Jane Doe',
                             '7273959261', '7273959261',
-                            'customer@gmail.com', 'billing@gmail.com',
+                            'customer_name_item@gmail.com', 'billing@gmail.com',
                             '14917 1st st e', '1234 turn5 dr',
                             '\"\"', '\"\"',
                             'Maderia Beach', 'Maderia Beach',
                             'FL', 'FL',
                             '33708', '33708',
                             'US', 'US', '0', 'note')
-    assert (test_body['customer']['name'] == 'John Doe')
+    assert (test_body['customer_name_item']['name'] == 'John Doe')
     assert (test_body['date'] == '2022-05-11T08:28:55-04:00')
     assert (test_body['billing']['contact'] == 'Jane Doe')
     assert (test_body['customerPO'] == 'mitchell-test-CS2122')
     assert (test_body['billing']['email'] == 'billing@gmail.com')
-    assert (test_body['shipping']['email'] == 'customer@gmail.com')
+    assert (test_body['shipping']['email'] == 'customer_name_item@gmail.com')
 
 
 def test_create_body_drop_shipper():
@@ -72,7 +72,7 @@ def test_create_body_drop_shipper():
                             'FL', 'GA',
                             '33708', '12345',
                             'US', 'US', '0', 'note')
-    assert (test_body['customer']['name'] == 'Turn5')
+    assert (test_body['customer_name_item']['name'] == 'Turn5')
     assert (test_body['date'] == '2022-05-11T08:28:55-04:00')
     assert (test_body['billing']['contact'] == 'Turn5')
     assert (test_body['customerPO'] == 'mitchell-test-CS2122')

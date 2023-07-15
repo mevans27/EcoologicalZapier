@@ -109,7 +109,7 @@ for key, value in turn5_dict.items():
         turn5_string += "\n"
 
 
-other_customers_string = "sos order number ~ customer name ~ quantity ~ sku array ~ due date ~ notes\n"
+other_customers_string = "sos order number ~ customer_name_item name ~ quantity ~ sku array ~ due date ~ notes\n"
 for key, value in other_customers_dict.items():
     other_customers_string += str(key) + " ~ " + str(value.customer_name) + " ~ " + str(value.quantity) + " ~ " + ', '.join(value.sku_array) + " ~ " + str(
         value.due_date) + " ~ " + '. '.join(value.notes)

@@ -1,7 +1,9 @@
-access_token = "Dd5WjlF8nv25rFUAeeIuUBhO0-vefvCl7O0ATF554P73KDeR2pEyrYKKX3LZ3BsFQjXAj8qOFXt7kOjQJf97I8ykkRuO3c6cuydyRijkkUxcI1j4JK5Eq2anlOtIoHCI1IPtPkTdQbjL8Gy67rLGxDR7LcPD2Z-BhMcMsCum8OKH1CuV02gJ2T2EQvupwrT0wyLXg06vLfI3fWzq_kcY8efoay7iAVRo0vPW7ulFcPprTrDHncEa-OjRSyqRhsQS_066WqobWDjrsGq0Hpdzv-5TvVwYKRVpjsS7Wi7up2sOL07t"
-date_time_str = "2023-05-11T08:28:55"
-sku_line_items = "EK4001"
-qty_line_items = "1"
-vendor_line_items = "Trim Illusion"
-price_line_items = "204.94"
-payment_gateway_names = "shopify_payments+"
+input_data = {
+    'access_token': '',
+    'date_time_str': '2023-05-11T08:28:55',
+    'sku_line_items': 'EF0212,EF0412,DF3012,G-EF12',
+    'qty_line_items': '1,1,,1,1',
+    'vendor_line_items': 'Ecoological,Ecoological,Ecoological,Ecoological',
+    'price_line_items': '119.95,129.95,124.95,124.95',
+    'payment_gateway_names': 'Net 30'
+}

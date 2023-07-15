@@ -46,7 +46,7 @@ def get_drop_shipper_variables(is_drop_shipper, is_billing_information_specified
         billing_customer_default_address_province_code = input_data['billing_customer_default_address_province_code']
         billing_customer_default_address_zip = input_data['billing_customer_default_address_zip']
         billing_customer_default_address_country_code = input_data['billing_customer_default_address_country_code']
-        email = billing_email  # For dropshippers, the Shipping email comes from the dropshipper not the end customer
+        email = billing_email  # For dropshippers, the Shipping email comes from the dropshipper not the end customer_name_item
     else:
         if is_billing_information_specified == "true":
             billing_customer_default_address_name = input_data['billing_customer_default_address_name']
@@ -142,7 +142,7 @@ def create_body(name, updated_at, payment_names, is_drop_shipper, total_shipping
         "syncToken": 0,
         "number": "auto",
         "date": updated_at,
-        "customer": {
+        "customer_name_item": {
             "name": customer_name
         },
         "location": {
