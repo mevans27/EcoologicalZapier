@@ -1,0 +1,8 @@
+!/export_order_json/input_data.py
+!/get_overall_order_queries/input_data.py
+!/get_purchased_products_list/input_data.py
+!/get_tables_of_items_ordered/input_data.py
+!/import_order_json/input_data.py
+!/import_order_json/test-2.json
+!/import_order_json/test.json
+!/.pytest_cache/
